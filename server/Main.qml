@@ -6,10 +6,10 @@ import io.qt.Backend
 
 Window {
     id: window
-    width: 1440
-    height: 720
+    width: 640
+    height: 400
     visible: true
-    title: qsTr("Hello World")
+    title: qsTr("Tcp Server")
     color: "#222222"
 
     Universal.theme: Universal.Dark
