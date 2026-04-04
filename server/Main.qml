@@ -2,104 +2,197 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Controls.Universal
-import io.qt.Backend
+import TCPServer
 
 Window {
     id: window
     width: 640
     height: 400
     visible: true
-    title: qsTr("Tcp Server")
-    color: "#222222"
+    title: qsTr("Hello World")
+    color: "#11111b"
 
     Universal.theme: Universal.Dark
-    Universal.accent: Universal.Violet
+    Universal.background: "#1e1e2e"
+    Universal.foreground: "#cdd6f4"
+    Universal.accent: "#b4befe"
 
-    Backend {
-        id: backend
-        onSmbConnected: {
-            ti.append(addMsg("Somebody has connected"));
+    TCPServer {
+        id: tcpServer
+        host: "localhost"
+        port: 6547
+
+        onSomeMessage: {
+            console.log("received message: ", msg);
         }
-        onSmbDisconnected: {
-            ti.append(addMsg("Somebody has disconnected"));
+    }
+
+    Component {
+        id: stoppedActions
+
+        RowLayout {
+            Button {
+                id: startBtn
+                topPadding: 8
+                leftPadding: 16
+                rightPadding: 16
+                bottomPadding: 8
+                font.pixelSize: 16
+                Universal.foreground: "#11111b"
+                text: "Start"
+                onClicked: {
+                    tcpServer.start();
+                }
+                background: Rectangle {
+                    border.width: 2
+                    radius: 5
+                    color: "#a6e3a1"
+                }
+            }
         }
-        onNewMessage: {
-            ti.append(addMsg("New message: " + msg));
+    }
+
+    Component {
+        id: startedActions
+
+        RowLayout {
+            Button {
+                id: disconnectBtn
+                topPadding: 8
+                leftPadding: 16
+                rightPadding: 16
+                bottomPadding: 8
+                font.pixelSize: 16
+                Universal.foreground: "#11111b"
+                text: "Disconnect"
+                enabled: tcpServer.isConnected
+                onClicked: {
+                    tcpServer.disconnect();
+                }
+                background: Rectangle {
+                    border.width: 2
+                    radius: 5
+                    opacity: tcpServer.isConnected ? 1 : 0.5
+                    color: "#f38ba8"
+                }
+            }
+            Button {
+                id: stopBtn
+                topPadding: 8
+                leftPadding: 16
+                rightPadding: 16
+                bottomPadding: 8
+                font.pixelSize: 16
+                Universal.foreground: "#11111b"
+                text: "Stop"
+                onClicked: {
+                    tcpServer.stop();
+                }
+                background: Rectangle {
+                    border.width: 2
+                    radius: 5
+                    color: "#f38ba8"
+                }
+            }
         }
     }
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 10
+        spacing: 8
+        anchors.margins: 8
 
-        RowLayout {
-            anchors.horizontalCenter: parent.horizontalCenter
+        FlexboxLayout {
+            Layout.fillHeight: false
+            justifyContent: FlexboxLayout.JustifySpaceBetween
+            alignItems: FlexboxLayout.AlignCenter
 
-            BetterButton {
-                id: btn_start
-                anchors.left: parent.left
-                text: "Start server"
-                color: enabled ? this.down ? "#78C37F" : "#87DB8D" : "gray"
-                border.color: "#78C37F"
-                onClicked: {
-                    ti.append(addMsg(backend.startClicked()));
-                    this.enabled = false;
+            RowLayout {
+                Text {
+                    id: appName
+                    text: "TCPServer"
+                    font.bold: true
+                    font.pixelSize: 24
+                    color: "#b4befe"
+                }
+
+                Text {
+                    id: state
+                    text: tcpServer.isConnected ? "Connected" : tcpServer.isListening ? "Listening" : "Disconnected"
+                    font.weight: 500
+                    font.pixelSize: 20
+                    color: tcpServer.isListening ? "#b4befe" : tcpServer.isConnected ? "#a6e3a1" : "#f38ba8"
                 }
             }
-            BetterButton {
-                enabled: !btn_start.enabled
-                anchors.right: parent.right
-                text: "Stop server"
-                color: enabled ? this.down ? "#DB7A74" : "#FF7E79" : "gray"
-                border.color: "#DB7A74"
-                onClicked: {
-                    ti.append(addMsg(backend.stopClicked()));
-                    btn_start.enabled = true;
-                }
+
+            Loader {
+                sourceComponent: tcpServer.isListening ? startedActions : stoppedActions
             }
         }
 
-        LayoutSection {
+        ScrollView {
+            Layout.fillWidth: true
             Layout.fillHeight: true
 
-            ScrollView {
-                id: scrollView
-                anchors.fill: parent
-                Universal.background: "#111111"
-
-                TextArea {
-                    id: ti
-                    readOnly: true
-                    selectByMouse: true
-                    font.pixelSize: 14
-                    wrapMode: TextInput.WrapAnywhere
-                    Universal.foreground: "white"
+            TextArea {
+                id: output
+                readOnly: true
+                font.pixelSize: 16
+                background: Rectangle {
+                    border.width: 2
+                    radius: 5
+                    color: "#1e1e2e"
                 }
             }
         }
 
-        BetterButton {
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: "Test connection"
-            color: this.down ? "#6FA3D2" : "#7DB7E9"
-            border.color: "#6FA3D2"
-            onClicked: {
-                ti.append(addMsg(backend.testClicked()));
+        RowLayout {
+
+            TextField {
+                id: input
+                implicitHeight: sendBtn.height
+                Layout.fillWidth: true
+                font.pixelSize: 16
+                placeholderText: qsTr("Enter something")
+                background: Rectangle {
+                    border.width: 2
+                    radius: 5
+                    color: "#1e1e2e"
+                }
+            }
+
+            Button {
+                id: sendBtn
+                topPadding: 8
+                leftPadding: 16
+                rightPadding: 16
+                bottomPadding: 8
+                font.pixelSize: 16
+                Universal.foreground: "#11111b"
+                text: "Send"
+                enabled: tcpServer.isConnected && input.text != "" ? true : false
+                onClicked: {
+                    tcpServer.send(input.text);
+                    output.append(addTime("Sent: " + input.text));
+                    input.clear();
+                }
+                background: Rectangle {
+                    border.width: 2
+                    radius: 5
+                    opacity: parent.enabled ? 1 : 0.5
+                    color: "#89b4fa"
+                }
             }
         }
     }
 
     Component.onCompleted: {
-        ti.text = addMsg("Application started\n- - - - - -");
+        output.text = addTime("Application started\n- - - - - - -");
     }
 
-    function addMsg(someText) {
-        return "[" + currentTime() + "] " + someText;
-    }
-
-    function currentTime() {
+    function addTime(msg) {
         var now = new Date();
-        var nowString = ("0" + now.getHours()).slice(-2) + ":" + ("0" + now.getMinutes()).slice(-2) + ":" + ("0" + now.getSeconds()).slice(-2);
-        return nowString;
+        var currentTime = ("0" + now.getHours()).slice(-2) + ":" + ("0" + now.getMinutes()).slice(-2) + ":" + ("0" + now.getSeconds()).slice(-2);
+        return "[" + currentTime + "] " + msg;
     }
 }

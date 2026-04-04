@@ -1,59 +1,65 @@
-#ifndef TCPCLIENT_H
-#define TCPCLIENT_H
+#ifndef TCPSERVER_H
+#define TCPSERVER_H
 
 #include <QDataStream>
 #include <QObject>
 #include <QString>
+#include <QTcpServer>
 #include <QTcpSocket>
 #include <QTimer>
 
-class TCPClient : public QObject {
+class TCPServer : public QObject {
   Q_OBJECT
   // QML_ELEMENT
   // QML_SINGLETON
 
   Q_PROPERTY(QString host READ host WRITE setHost);
   Q_PROPERTY(int port READ port WRITE setPort);
-  Q_PROPERTY(bool isConnected READ getStatus NOTIFY statusChanged);
+  Q_PROPERTY(bool isListening READ getServerStatus NOTIFY serverStatusChanged);
+  Q_PROPERTY(bool isConnected READ getClientStatus NOTIFY clientStatusChanged);
 
 public:
-  TCPClient();
-  bool getStatus();
+  TCPServer();
 
 signals:
-  void statusChanged(bool);
+  void serverStatusChanged(bool);
+  void clientStatusChanged(bool);
+
   void hasReadSome(QString msg);
 
   void someError(QString err);
   void someMessage(QString msg);
 
 public slots:
-  void connect();
+  bool start();
+  void stop();
   void disconnect();
 
-  void send(QString msg);
+  qint64 send(QString msg);
   void received(QString msg);
   void error(QAbstractSocket::SocketError err);
 
 private slots:
-  void timeout();
   void connected();
   void disconnected();
   void readyRead();
 
 private:
+  QTcpServer *tcpServer;
   QTcpSocket *tcpSocket;
 
   QString _host;
   int _port;
-  bool status;
+  bool serverStatus;
+  bool clientStatus;
   quint16 m_nNextBlockSize;
-  QTimer *timeoutTimer;
 
   QString host();
   int port();
   void setHost(QString host);
   void setPort(int port);
+  bool getServerStatus();
+  bool getClientStatus();
 };
 
 #endif
