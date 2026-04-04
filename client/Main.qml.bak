@@ -1,0 +1,109 @@
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import QtQuick.Controls.Universal
+import TCPClient
+
+Window {
+    id: window
+    width: 640
+    height: 400
+    visible: true
+    title: qsTr("Hello World")
+
+    TCPClient {
+        id: tcpClient
+        host: "localhost"
+        port: 6547
+    }
+
+    Component {
+        id: disconnectedActions
+
+        RowLayout {
+            Button {
+                id: connectBtn
+                text: "Connect"
+                onClicked: {
+                    tcpClient.connect();
+                    console.log("Connecting to host");
+                }
+            }
+        }
+    }
+
+    Component {
+        id: connectedActions
+
+        RowLayout {
+            Button {
+                id: disconnectBtn
+                text: "Disconnect"
+                onClicked: {
+                    tcpClient.disconnect();
+                    console.log("Disconnecting from host");
+                }
+            }
+        }
+    }
+
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 8
+        anchors.margins: 8
+
+        FlexboxLayout {
+            Layout.fillHeight: false
+            justifyContent: FlexboxLayout.JustifySpaceBetween
+            alignItems: FlexboxLayout.AlignCenter
+
+            Text {
+                id: state
+                text: tcpClient.isConnected ? "Connected" : "Disconnected"
+                font.bold: true
+                color: tcpClient.isConnected ? "green" : "red"
+            }
+
+            Loader {
+                sourceComponent: tcpClient.isConnected ? connectedActions : disconnectedActions
+            }
+        }
+
+        ScrollView {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            TextArea {
+                id: output
+                readOnly: true
+            }
+        }
+
+        RowLayout {
+
+            TextInput {
+                id: input
+                padding: 10
+                Layout.fillWidth: true
+
+                Rectangle {
+                    border.color: "gray"
+                    border.width: 2
+                    anchors.fill: parent
+                    z: -1
+                }
+            }
+
+            Button {
+                id: sendBtn
+                text: "Send"
+                enabled: tcpClient.isConnected ? true : false
+                onClicked: {
+                    tcpClient.send(input.text);
+                    output.append("Sent: " + input.text);
+                    input.clear();
+                }
+            }
+        }
+    }
+}

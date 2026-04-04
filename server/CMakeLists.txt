@@ -7,7 +7,7 @@ project(
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick Core)
+find_package(Qt6 REQUIRED COMPONENTS Quick)
 
 qt_standard_project_setup(REQUIRES 6.10)
 
@@ -35,7 +35,7 @@ set_target_properties(
              MACOSX_BUNDLE TRUE
              WIN32_EXECUTABLE TRUE)
 
-         target_link_libraries(appserver PRIVATE Qt6::Quick Qt::Core)
+         target_link_libraries(appserver PRIVATE Qt6::Quick)
 
 install(
   TARGETS appserver
