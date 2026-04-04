@@ -2,155 +2,163 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Controls.Universal
-import io.qt.Backend
+import TCPClient
 
 Window {
     id: window
     width: 640
     height: 400
     visible: true
-    title: qsTr("Tcp Client")
-    color: "#222222"
+    title: qsTr("Hello World")
+    color: "#11111b"
 
     Universal.theme: Universal.Dark
-    Universal.accent: Universal.Violet
+    Universal.background: "#1e1e2e"
+    Universal.foreground: "#cdd6f4"
+    Universal.accent: "#b4befe"
 
-    Backend {
-        id: backend
+    TCPClient {
+        id: tcpClient
+        host: "localhost"
+        port: 6547
+    }
 
-        onStatusChanged: {
-            //console.log(currentStatus);
-            ti.append(addMsg(newStatus));
-            if (currentStatus !== true) {
-                btn_connect.enabled = true;
+    Component {
+        id: disconnectedActions
+
+        RowLayout {
+            Button {
+                id: connectBtn
+                topPadding: 8
+                leftPadding: 16
+                rightPadding: 16
+                bottomPadding: 8
+                font.pixelSize: 16
+                Universal.foreground: "#11111b"
+                text: "Connect"
+                onClicked: {
+                    tcpClient.connect();
+                }
+                background: Rectangle {
+                    border.width: 2
+                    radius: 5
+                    color: "#a6e3a1"
+                }
             }
         }
-        onSomeMessage: {
-            ti.append(addMsg(msg));
-        }
-        onSomeError: {
-            ti.append(addMsg("Error! " + err));
-            if (currentStatus !== true) {
-                backend.disconnectClicked();
+    }
+
+    Component {
+        id: connectedActions
+
+        RowLayout {
+            Button {
+                id: disconnectBtn
+                topPadding: 8
+                leftPadding: 16
+                rightPadding: 16
+                bottomPadding: 8
+                font.pixelSize: 16
+                Universal.foreground: "#11111b"
+                text: "Disconnect"
+                onClicked: {
+                    tcpClient.disconnect();
+                }
+                background: Rectangle {
+                    border.width: 2
+                    radius: 5
+                    color: "#f38ba8"
+                }
             }
-            btn_connect.enabled = true;
         }
     }
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 10
+        spacing: 8
+        anchors.margins: 8
 
-        LayoutSection {
-            height: status.height + 15
-            color: backend.currentStatus ? "#CAF5CF" : "#EA9FA9"
+        FlexboxLayout {
+            Layout.fillHeight: false
+            justifyContent: FlexboxLayout.JustifySpaceBetween
+            alignItems: FlexboxLayout.AlignCenter
 
             Text {
-                id: status
-                anchors.centerIn: parent
-                text: backend.currentStatus ? "CONNECTED" : "DISCONNECTED"
-                font.weight: Font.Bold
+                id: state
+                text: tcpClient.isConnected ? "Connected" : "Disconnected"
+                font.bold: true
+                font.pixelSize: 24
+                color: tcpClient.isConnected ? "#a6e3a1" : "#f38ba8"
+            }
+
+            Loader {
+                sourceComponent: tcpClient.isConnected ? connectedActions : disconnectedActions
             }
         }
 
-        RowLayout {
-            anchors.horizontalCenter: parent.horizontalCenter
-
-            BetterButton {
-                id: btn_connect
-                anchors.left: parent.left
-                text: "Connect to server"
-                color: enabled ? this.down ? "#78C37F" : "#87DB8D" : "gray"
-                border.color: "#78C37F"
-                onClicked: {
-                    ti.append(addMsg("Connecting to server..."));
-                    backend.connectClicked();
-                    this.enabled = false;
-                }
-            }
-            BetterButton {
-                id: btn_disconnect
-                enabled: !btn_connect.enabled
-                anchors.right: parent.right
-                text: "Disconnect from server"
-                color: enabled ? this.down ? "#DB7A74" : "#FF7E79" : "gray"
-                border.color: "#DB7A74"
-                onClicked: {
-                    ti.append(addMsg("Disconnecting from server..."));
-                    backend.disconnectClicked();
-                    btn_connect.enabled = true;
-                }
-            }
-        }
-
-        LayoutSection {
+        ScrollView {
+            Layout.fillWidth: true
             Layout.fillHeight: true
 
-            ScrollView {
-                id: scrollView
-                anchors.fill: parent
-                Universal.background: "#111111"
-
-                TextArea {
-                    id: ti
-                    readOnly: true
-                    selectByMouse: true
-                    font.pixelSize: 14
-                    wrapMode: TextInput.WrapAnywhere
-                    Universal.foreground: "white"
+            TextArea {
+                id: output
+                readOnly: true
+                font.pixelSize: 16
+                background: Rectangle {
+                    border.width: 2
+                    radius: 5
+                    color: "#1e1e2e"
                 }
             }
         }
 
         RowLayout {
-            Layout.leftMargin: 15
-            Layout.rightMargin: 15
-            Layout.topMargin: 5
-            Layout.bottomMargin: 5
 
-            Rectangle {
+            TextField {
+                id: input
+                implicitHeight: sendBtn.height
                 Layout.fillWidth: true
-                height: btn_send.height
-                color: "#F4F2F5"
-                border.color: "gray"
-                border.width: 1
-
-                TextInput {
-                    id: msgToSend
-                    anchors.verticalCenter: parent.verticalCenter
-                    leftPadding: 10
-                    rightPadding: 10
-                    width: parent.width
-                    font.pixelSize: 14
-                    clip: true
+                font.pixelSize: 16
+                placeholderText: qsTr("Enter something")
+                background: Rectangle {
+                    border.width: 2
+                    radius: 5
+                    color: "#1e1e2e"
                 }
             }
 
-            BetterButton {
-                id: btn_send
-                enabled: !btn_connect.enabled
+            Button {
+                id: sendBtn
+                topPadding: 8
+                leftPadding: 16
+                rightPadding: 16
+                bottomPadding: 8
+                font.pixelSize: 16
+                Universal.foreground: "#11111b"
                 text: "Send"
-                color: enabled ? this.down ? "#6FA3D2" : "#7DB7E9" : "gray"
-                border.color: "#6FA3D2"
+                enabled: tcpClient.isConnected && input.text != "" ? true : false
                 onClicked: {
-                    ti.append(addMsg("Sending message..."));
-                    backend.sendClicked(msgToSend.text);
+                    tcpClient.send(input.text);
+                    output.append(addTime("Sent: " + input.text));
+                    input.clear();
+                }
+                background: Rectangle {
+                    border.width: 2
+                    radius: 5
+                    opacity: parent.enabled ? 1 : 0.5
+                    color: "#89b4fa"
                 }
             }
         }
     }
 
     Component.onCompleted: {
-        ti.text = addMsg("Application started\n- - - - - -", false);
+        output.text = addTime("Application started\n- - - - - - -");
     }
 
-    function addMsg(someText) {
-        return "[" + currentTime() + "] " + someText;
-    }
-
-    function currentTime() {
+    function addTime(msg) {
         var now = new Date();
-        var nowString = ("0" + now.getHours()).slice(-2) + ":" + ("0" + now.getMinutes()).slice(-2) + ":" + ("0" + now.getSeconds()).slice(-2);
-        return nowString;
+        var currentTime = ("0" + now.getHours()).slice(-2) + ":" + ("0" + now.getMinutes()).slice(-2) + ":" + ("0" + now.getSeconds()).slice(-2);
+        return "[" + currentTime + "] " + msg;
     }
 }

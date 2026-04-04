@@ -1,11 +1,11 @@
-#include "backend.h"
+#include "tcpClient.h"
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
 int main(int argc, char *argv[]) {
   QGuiApplication app(argc, argv);
 
-  qmlRegisterType<Backend>("io.qt.Backend", 1, 0, "Backend");
+  qmlRegisterType<TCPClient>("TCPClient", 1, 0, "TCPClient");
 
   QQmlApplicationEngine engine;
   QObject::connect(
