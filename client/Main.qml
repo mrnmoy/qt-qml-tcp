@@ -21,6 +21,10 @@ Window {
         id: tcpClient
         host: "localhost"
         port: 6547
+
+        onSomeMessage: {
+            console.log("received message: ", msg);
+        }
     }
 
     Component {
@@ -83,12 +87,22 @@ Window {
             justifyContent: FlexboxLayout.JustifySpaceBetween
             alignItems: FlexboxLayout.AlignCenter
 
-            Text {
-                id: state
-                text: tcpClient.isConnected ? "Connected" : "Disconnected"
-                font.bold: true
-                font.pixelSize: 24
-                color: tcpClient.isConnected ? "#a6e3a1" : "#f38ba8"
+            RowLayout {
+                Text {
+                    id: appName
+                    text: "TCPClient"
+                    font.bold: true
+                    font.pixelSize: 24
+                    color: "#b4befe"
+                }
+
+                Text {
+                    id: state
+                    text: tcpClient.isConnected ? "Connected" : "Disconnected"
+                    font.weight: 500
+                    font.pixelSize: 20
+                    color: tcpClient.isConnected ? "#a6e3a1" : "#f38ba8"
+                }
             }
 
             Loader {

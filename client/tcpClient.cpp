@@ -68,6 +68,7 @@ void TCPClient::connected() {
 }
 
 void TCPClient::disconnected() {
+  // QObject::disconnect(tcpSocket, &QTcpSocket::disconnected, 0, 0);
   status = false;
   emit statusChanged(status);
 }
