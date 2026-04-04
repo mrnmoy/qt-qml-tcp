@@ -121,7 +121,7 @@ Window {
                     text: tcpServer.isConnected ? "Connected" : tcpServer.isListening ? "Listening" : "Disconnected"
                     font.weight: 500
                     font.pixelSize: 20
-                    color: tcpServer.isListening ? "#b4befe" : tcpServer.isConnected ? "#a6e3a1" : "#f38ba8"
+                    color: tcpServer.isConnected ? "#a6e3a1" : tcpServer.isListening ? "#b4befe" : "#f38ba8"
                 }
             }
 
