@@ -20,18 +20,14 @@ public:
 
 signals:
   void statusChanged(bool);
-  void hasReadSome(QString msg);
-
-  void someMessage(QString msg);
-  void someError(QString err);
+  void received(QString msg);
+  void error(QString err);
+  // void error(QAbstractSocket::SocketError err);
 
 public slots:
   void connect(QString host, int port);
   void disconnect();
-
   void send(QString msg);
-  void received(QString msg);
-  void error(QAbstractSocket::SocketError err);
 
 private slots:
   void timeout();

@@ -21,8 +21,8 @@ Window {
         id: tcpClient
 
         onStatusChanged: status => output.append(addTime(status ? "Connected to the server" : "Disconnected from the host"))
-        onSomeMessage: msg => output.append(addTime("Recieved: " + msg))
-        onSomeError: err => output.append("Error: ", err)
+        onReceived: msg => output.append(addTime("Recieved: " + msg))
+        onError: err => output.append("Error: ", err)
     }
 
     Component {

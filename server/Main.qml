@@ -20,9 +20,10 @@ Window {
     TCPServer {
         id: tcpServer
 
-        onSomeMessage: {
-            console.log("received message: ", msg);
-        }
+        onServerStatusChanged: status => output.append(addTime(status ? "Server started" : "Server stopped"))
+        onClientStatusChanged: status => output.append(addTime(status ? "Client connected" : "Client disconnected"))
+        onReceived: msg => output.append(addTime("Recieved: " + msg))
+        onError: err => output.append(addTime("Error: " + err))
     }
 
     Component {

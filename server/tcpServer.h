@@ -23,10 +23,9 @@ signals:
   void serverStatusChanged(bool);
   void clientStatusChanged(bool);
 
-  void hasReadSome(QString msg);
-
-  void someError(QString err);
-  void someMessage(QString msg);
+  void received(QString msg);
+  void error(QString err);
+  // void error(QAbstractSocket::SocketError err);
 
 public slots:
   bool start(QString host, int port);
@@ -34,8 +33,6 @@ public slots:
   void disconnect();
 
   qint64 send(QString msg);
-  void received(QString msg);
-  void error(QAbstractSocket::SocketError err);
 
 private slots:
   void connected();

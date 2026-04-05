@@ -54,13 +54,6 @@ void TCPServer::disconnect() {
 void TCPServer::connected() {
   tcpSocket = tcpServer->nextPendingConnection();
 
-  // QObject::connect(this, &TCPServer::readyRead, this,
-  // &TCPServer::someMessage); QObject::connect(tcpSocket,
-  // &QTcpSocket::connected, this,
-  //                  &TCPServer::connected);
-
-  // QObject::connect(tcpSocket, &QTcpSocket::disconnected, tcpSocket,
-  //                  &QTcpSocket::deleteLater);
   QObject::connect(tcpSocket, &QTcpSocket::readyRead, this,
                    &TCPServer::readyRead);
   QObject::connect(tcpSocket, &QTcpSocket::disconnected, this,
@@ -103,11 +96,8 @@ void TCPServer::readyRead() {
     //   disconnect();
     // }
 
-    emit hasReadSome(str);
+    emit received(str);
     m_nNextBlockSize = 0;
-
-    if (send("Reply: received [%1]") == -1)
-      qDebug() << "error reading";
   }
 }
 
@@ -120,28 +110,4 @@ qint64 TCPServer::send(QString msg) {
   out << quint16(arrBlock.size() - sizeof(quint16));
 
   return tcpSocket->write(arrBlock);
-}
-
-void TCPServer::received(QString msg) { emit someMessage(msg); }
-
-void TCPServer::error(QAbstractSocket::SocketError err) {
-  QString strError = "unknown";
-  switch (err) {
-  case 0:
-    strError = "Connection was refused";
-    break;
-  case 1:
-    strError = "Remote host closed the connection";
-    break;
-  case 2:
-    strError = "Host address was not found";
-    break;
-  case 5:
-    strError = "Connection timed out";
-    break;
-  default:
-    strError = "Unknown error";
-  }
-
-  emit someError(strError);
 }
