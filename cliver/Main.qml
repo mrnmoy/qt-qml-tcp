@@ -160,7 +160,7 @@ Window {
                     font.pixelSize: 16
                     text: "1234"
                     validator: IntValidator {}
-                    enabled: !tcpServer.isListening
+                    enabled: !tcpServer.isListening && !tcpServer.isConnected
                     background: Rectangle {
                         border.width: 2
                         radius: 5
