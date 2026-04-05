@@ -146,24 +146,27 @@ Window {
             }
         }
 
-        ScrollView {
-            id: scrollView
+        Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            TextArea {
-                id: output
-                readOnly: true
-                font.pixelSize: 16
-                background: Rectangle {
-                    border.width: 2
-                    radius: 5
-                    color: "#1e1e2e"
+            ScrollView {
+                anchors.fill: parent
+
+                TextArea {
+                    id: output
+                    readOnly: true
+                    font.pixelSize: 16
+                    background: Rectangle {
+                        border.width: 2
+                        radius: 5
+                        color: "#1e1e2e"
+                    }
                 }
             }
 
             Button {
-                x: output.width - 40
+                x: parent.width - 40
                 y: 8
                 icon.color: "#f38ba8"
                 icon.source: "qrc:/bin.png"
