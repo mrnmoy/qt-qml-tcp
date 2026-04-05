@@ -19,12 +19,10 @@ Window {
 
     TCPClient {
         id: tcpClient
-        host: "localhost"
-        port: 6547
 
-        onSomeMessage: {
-            console.log("received message: ", msg);
-        }
+        onStatusChanged: status => output.append(addTime(status ? "Connected to the server" : "Disconnected from the host"))
+        onSomeMessage: msg => output.append(addTime("Recieved: " + msg))
+        onSomeError: err => output.append("Error: ", err)
     }
 
     Component {
@@ -41,7 +39,7 @@ Window {
                 Universal.foreground: "#11111b"
                 text: "Connect"
                 onClicked: {
-                    tcpClient.connect();
+                    tcpClient.connect("localhost", parseInt(portInput.text));
                 }
                 background: Rectangle {
                     border.width: 2
@@ -105,8 +103,24 @@ Window {
                 }
             }
 
-            Loader {
-                sourceComponent: tcpClient.isConnected ? connectedActions : disconnectedActions
+            RowLayout {
+                TextField {
+                    id: portInput
+                    implicitHeight: parent.height
+                    implicitWidth: 96
+                    font.pixelSize: 16
+                    text: "1234"
+                    validator: IntValidator {}
+                    enabled: !tcpClient.isConnected
+                    background: Rectangle {
+                        border.width: 2
+                        radius: 5
+                        color: "#1e1e2e"
+                    }
+                }
+                Loader {
+                    sourceComponent: tcpClient.isConnected ? connectedActions : disconnectedActions
+                }
             }
         }
 

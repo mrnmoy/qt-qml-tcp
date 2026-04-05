@@ -13,8 +13,6 @@ class TCPServer : public QObject {
   // QML_ELEMENT
   // QML_SINGLETON
 
-  Q_PROPERTY(QString host READ host WRITE setHost);
-  Q_PROPERTY(int port READ port WRITE setPort);
   Q_PROPERTY(bool isListening READ getServerStatus NOTIFY serverStatusChanged);
   Q_PROPERTY(bool isConnected READ getClientStatus NOTIFY clientStatusChanged);
 
@@ -31,7 +29,7 @@ signals:
   void someMessage(QString msg);
 
 public slots:
-  bool start();
+  bool start(QString host, int port);
   void stop();
   void disconnect();
 
@@ -48,16 +46,10 @@ private:
   QTcpServer *tcpServer;
   QTcpSocket *tcpSocket;
 
-  QString _host;
-  int _port;
   bool serverStatus;
   bool clientStatus;
   quint16 m_nNextBlockSize;
 
-  QString host();
-  int port();
-  void setHost(QString host);
-  void setPort(int port);
   bool getServerStatus();
   bool getClientStatus();
 };

@@ -12,16 +12,11 @@ TCPClient::TCPClient() : QObject(), m_nNextBlockSize(0) {
                    &TCPClient::disconnected);
 }
 
-QString TCPClient::host() { return _host; };
-int TCPClient::port() { return _port; };
-
-void TCPClient::setHost(QString newHost) { _host = newHost; }
-void TCPClient::setPort(int newPort) { _port = newPort; }
-
-void TCPClient::connect() {
+void TCPClient::connect(QString host, int port) {
   timeoutTimer->start(3000);
 
-  tcpSocket->connectToHost(_host, _port);
+  // tcpSocket->connectToHost(_host, _port);
+  tcpSocket->connectToHost(host, port);
   QObject::connect(tcpSocket, &QTcpSocket::connected, this,
                    &TCPClient::connected);
   QObject::connect(tcpSocket, &QTcpSocket::readyRead, this,

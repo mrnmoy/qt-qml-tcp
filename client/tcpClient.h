@@ -12,8 +12,6 @@ class TCPClient : public QObject {
   // QML_ELEMENT
   // QML_SINGLETON
 
-  Q_PROPERTY(QString host READ host WRITE setHost);
-  Q_PROPERTY(int port READ port WRITE setPort);
   Q_PROPERTY(bool isConnected READ getStatus NOTIFY statusChanged);
 
 public:
@@ -24,11 +22,11 @@ signals:
   void statusChanged(bool);
   void hasReadSome(QString msg);
 
-  void someError(QString err);
   void someMessage(QString msg);
+  void someError(QString err);
 
 public slots:
-  void connect();
+  void connect(QString host, int port);
   void disconnect();
 
   void send(QString msg);
@@ -44,16 +42,9 @@ private slots:
 private:
   QTcpSocket *tcpSocket;
 
-  QString _host;
-  int _port;
   bool status;
   quint16 m_nNextBlockSize;
   QTimer *timeoutTimer;
-
-  QString host();
-  int port();
-  void setHost(QString host);
-  void setPort(int port);
 };
 
 #endif

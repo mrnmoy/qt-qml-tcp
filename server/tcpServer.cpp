@@ -6,14 +6,8 @@ TCPServer::TCPServer() : QObject(), m_nNextBlockSize(0) {
   tcpServer = new QTcpServer();
 }
 
-QString TCPServer::host() { return _host; };
-int TCPServer::port() { return _port; };
-
-void TCPServer::setHost(QString newHost) { _host = newHost; }
-void TCPServer::setPort(int newPort) { _port = newPort; }
-
-bool TCPServer::start() {
-  if (!tcpServer->listen(QHostAddress::Any, _port)) {
+bool TCPServer::start(QString host, int port) {
+  if (!tcpServer->listen(QHostAddress::Any, port)) {
     return false; // port is not available
   }
 

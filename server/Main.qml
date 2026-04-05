@@ -19,8 +19,6 @@ Window {
 
     TCPServer {
         id: tcpServer
-        host: "localhost"
-        port: 6547
 
         onSomeMessage: {
             console.log("received message: ", msg);
@@ -41,7 +39,7 @@ Window {
                 Universal.foreground: "#11111b"
                 text: "Start"
                 onClicked: {
-                    tcpServer.start();
+                    tcpServer.start("localhost", parseInt(portInput.text));
                 }
                 background: Rectangle {
                     border.width: 2
@@ -125,8 +123,25 @@ Window {
                 }
             }
 
-            Loader {
-                sourceComponent: tcpServer.isListening ? startedActions : stoppedActions
+            RowLayout {
+                TextField {
+                    id: portInput
+                    implicitHeight: parent.height
+                    implicitWidth: 96
+                    font.pixelSize: 16
+                    text: "1234"
+                    validator: IntValidator {}
+                    enabled: !tcpServer.isListening
+                    background: Rectangle {
+                        border.width: 2
+                        radius: 5
+                        color: "#1e1e2e"
+                    }
+                }
+
+                Loader {
+                    sourceComponent: tcpServer.isListening ? startedActions : stoppedActions
+                }
             }
         }
 
