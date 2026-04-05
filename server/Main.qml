@@ -214,7 +214,7 @@ Window {
     }
 
     Component.onCompleted: {
-        output.text = addTime("Application started\n- - - - - - -");
+        output.text = addTime("Application started");
     }
 
     function addTime(msg) {

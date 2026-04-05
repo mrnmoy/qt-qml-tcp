@@ -32,9 +32,6 @@ void TCPClient::disconnect() {
     tcpSocket->disconnectFromHost();
   else
     tcpSocket->abort();
-
-  status = false;
-  emit statusChanged(status);
 }
 
 void TCPClient::timeout() {

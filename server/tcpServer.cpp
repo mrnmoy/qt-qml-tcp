@@ -7,6 +7,8 @@ TCPServer::TCPServer() : QObject(), m_nNextBlockSize(0) {
 }
 
 bool TCPServer::start(QString host, int port) {
+  tcpServer->setMaxPendingConnections(1);
+
   if (!tcpServer->listen(QHostAddress::Any, port)) {
     return false; // port is not available
   }
@@ -24,13 +26,9 @@ void TCPServer::stop() {
     QObject::disconnect(tcpServer, &QTcpServer::newConnection, this,
                         &TCPServer::connected);
 
+    // QList<QTcpSocket *> tcpClients = server->getClients();
     if (clientStatus)
       disconnect();
-    // send("0");
-    // QList<QTcpSocket *> tcpClients = server->getClients();
-    // for (int i = 0; i < clients.count(); i++) {
-    //   send(clients.at(i), "0");
-    // }
 
     tcpServer->close();
     serverStatus = false;
@@ -46,13 +44,11 @@ void TCPServer::disconnect() {
     tcpSocket->disconnectFromHost();
   else
     tcpSocket->abort();
-
-  clientStatus = false;
-  emit clientStatusChanged(clientStatus);
 }
 
 void TCPServer::connected() {
   tcpSocket = tcpServer->nextPendingConnection();
+  tcpServer->pauseAccepting();
 
   QObject::connect(tcpSocket, &QTcpSocket::readyRead, this,
                    &TCPServer::readyRead);
@@ -65,6 +61,7 @@ void TCPServer::connected() {
 
 void TCPServer::disconnected() {
   // QObject::disconnect(tcpSocket, &QTcpSocket::disconnected, 0, 0);
+  tcpServer->resumeAccepting();
   clientStatus = false;
   emit clientStatusChanged(clientStatus);
 }
