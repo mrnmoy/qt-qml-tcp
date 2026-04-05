@@ -157,7 +157,7 @@ Window {
                 TextField {
                     id: port
                     implicitHeight: parent.height
-                    implicitWidth: 96
+                    implicitWidth: 76
                     font.pixelSize: 16
                     text: "1234"
                     validator: IntValidator {}

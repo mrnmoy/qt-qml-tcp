@@ -39,7 +39,7 @@ Window {
                 Universal.foreground: "#11111b"
                 text: "Connect"
                 onClicked: {
-                    tcpClient.connect("localhost", parseInt(portInput.text));
+                    tcpClient.connect("localhost", parseInt(port.text));
                 }
                 background: Rectangle {
                     border.width: 2
@@ -106,9 +106,9 @@ Window {
 
             RowLayout {
                 TextField {
-                    id: portInput
+                    id: port
                     implicitHeight: parent.height
-                    implicitWidth: 96
+                    implicitWidth: 76
                     font.pixelSize: 16
                     text: "1234"
                     validator: IntValidator {}
