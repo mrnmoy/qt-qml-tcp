@@ -63,7 +63,7 @@ Window {
                 Universal.foreground: "#11111b"
                 text: "Connect"
                 onClicked: {
-                    tcpServer.connect("localhost", parseInt(portInput.text));
+                    tcpServer.connect("localhost", parseInt(port.text));
                 }
                 background: Rectangle {
                     border.width: 2
@@ -82,7 +82,7 @@ Window {
                 Universal.foreground: "#11111b"
                 text: "Start"
                 onClicked: {
-                    tcpServer.start("localhost", parseInt(portInput.text));
+                    tcpServer.start("localhost", parseInt(port.text));
                 }
                 background: Rectangle {
                     border.width: 2
@@ -154,7 +154,7 @@ Window {
 
             RowLayout {
                 TextField {
-                    id: portInput
+                    id: port
                     implicitHeight: parent.height
                     implicitWidth: 96
                     font.pixelSize: 16
