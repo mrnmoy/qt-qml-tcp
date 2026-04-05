@@ -43,7 +43,7 @@ Window {
             }
             background: Rectangle {
                 border.width: 2
-                radius: 5
+                radius: 8
                 color: "#f38ba8"
             }
         }
@@ -67,7 +67,7 @@ Window {
                 }
                 background: Rectangle {
                     border.width: 2
-                    radius: 5
+                    radius: 8
                     color: "#a6e3a1"
                 }
             }
@@ -86,7 +86,7 @@ Window {
                 }
                 background: Rectangle {
                     border.width: 2
-                    radius: 5
+                    radius: 8
                     color: "#a6e3a1"
                 }
             }
@@ -112,7 +112,7 @@ Window {
                 }
                 background: Rectangle {
                     border.width: 2
-                    radius: 5
+                    radius: 8
                     opacity: tcpServer.isConnected ? 1 : 0.5
                     color: "#f38ba8"
                 }
@@ -141,6 +141,7 @@ Window {
                     font.bold: true
                     font.pixelSize: 24
                     color: "#b4befe"
+                    leftPadding: 8
                 }
 
                 Text {
@@ -163,7 +164,7 @@ Window {
                     enabled: !tcpServer.isListening && !tcpServer.isConnected
                     background: Rectangle {
                         border.width: 2
-                        radius: 5
+                        radius: 8
                         color: "#1e1e2e"
                     }
                 }
@@ -187,7 +188,7 @@ Window {
                     font.pixelSize: 16
                     background: Rectangle {
                         border.width: 2
-                        radius: 5
+                        radius: 8
                         color: "#1e1e2e"
                     }
                 }
@@ -214,7 +215,7 @@ Window {
                 placeholderText: qsTr("Enter something")
                 background: Rectangle {
                     border.width: 2
-                    radius: 5
+                    radius: 8
                     color: "#1e1e2e"
                 }
             }
@@ -236,7 +237,7 @@ Window {
                 }
                 background: Rectangle {
                     border.width: 2
-                    radius: 5
+                    radius: 8
                     opacity: parent.enabled ? 1 : 0.5
                     color: "#89b4fa"
                 }

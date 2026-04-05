@@ -92,6 +92,7 @@ Window {
                     font.bold: true
                     font.pixelSize: 24
                     color: "#b4befe"
+                    leftPadding: 8
                 }
 
                 Text {
