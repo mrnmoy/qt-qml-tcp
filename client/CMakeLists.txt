@@ -22,6 +22,12 @@ qt_add_qml_module(appclient
     QML_FILES Main.qml
 )
 
+qt_add_resources(appclient "images"
+    PREFIX "/"
+    FILES
+        bin.png
+)
+
 # qt_add_qml_module(tcpClient 
 #     URI TCPClient
 #     SOURCES tcpClient.cpp tcpClient.h

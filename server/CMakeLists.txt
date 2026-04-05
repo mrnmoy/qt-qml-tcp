@@ -19,7 +19,13 @@ qt_add_executable(appserver
 
 qt_add_qml_module(appserver
     URI server
-    QML_FILES Main.qml
+    QML_FILES Main.qml 
+)
+
+qt_add_resources(appserver "images"
+    PREFIX "/"
+    FILES
+        bin.png
 )
 
 # qt_add_qml_module(TCPServer 

@@ -59,8 +59,6 @@ void TCPServer::connected() {
   QObject::connect(tcpSocket, &QTcpSocket::disconnected, this,
                    &TCPServer::disconnected);
 
-  send("Reply: connection established");
-
   clientStatus = true;
   emit clientStatusChanged(clientStatus);
 }

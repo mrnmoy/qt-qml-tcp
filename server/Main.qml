@@ -147,6 +147,7 @@ Window {
         }
 
         ScrollView {
+            id: scrollView
             Layout.fillWidth: true
             Layout.fillHeight: true
 
@@ -160,10 +161,20 @@ Window {
                     color: "#1e1e2e"
                 }
             }
+
+            Button {
+                x: output.width - 40
+                y: 8
+                icon.color: "#f38ba8"
+                icon.source: "qrc:/bin.png"
+                onClicked: output.clear()
+                background: Rectangle {
+                    color: "transparent"
+                }
+            }
         }
 
         RowLayout {
-
             TextField {
                 id: input
                 implicitHeight: sendBtn.height
